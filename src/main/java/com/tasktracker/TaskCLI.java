@@ -11,7 +11,6 @@ public class TaskCLI {
             return;
         }
 
-        //TODO: implement jLine
 
         String command = args[0].toLowerCase();
 
