@@ -20,7 +20,7 @@ import java.util.UUID;
 public class Task {
     private final String id;
     private String description;
-    private Status status;
+    private String status;
     private final String createdAt;
     private String updatedAt;
 
@@ -33,7 +33,7 @@ public class Task {
     public Task(String description) {
         this.id = generateID();
         this.description = description;
-        this.status = Status.TODO;
+        this.status = "TODO";
         this.createdAt = getCurrentTime();
         this.updatedAt = this.createdAt;
     }
@@ -48,7 +48,7 @@ public class Task {
     public Task(String description, String status) {
         this.id = generateID();
         this.description = description;
-        this.status = Status.validateStatus(status);
+        this.status = status;
         this.createdAt = getCurrentTime();
         this.updatedAt = this.createdAt;
     }
@@ -56,7 +56,7 @@ public class Task {
     public Task(String id, String description, String status,String createdAt, String updatedAt){
         this.id = id;
         this.description = description;
-        this.status = Status.validateStatus(status);
+        this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -84,7 +84,7 @@ public class Task {
     }
 
     public void setStatus(String status) {
-        this.status = Status.validateStatus(status);
+        this.status = status;
         this.updatedAt = getCurrentTime();
     }
 

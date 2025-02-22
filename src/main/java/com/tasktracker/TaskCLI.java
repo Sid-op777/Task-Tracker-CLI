@@ -1,97 +1,93 @@
 package com.tasktracker;
 
-import java.util.*;
+import picocli.CommandLine;
 
-public class TaskCLI {
+import java.util.*;
+import picocli.CommandLine.*;
+
+@Command(
+        name = "tcli",
+        description = "\n" +
+                "___________              __     _________ .__  .__ \n" +
+                "\\__    ___/____    _____|  | __ \\_   ___ \\|  | |__|\n" +
+                "  |    |  \\__  \\  /  ___/  |/ / /    \\  \\/|  | |  |\n" +
+                "  |    |   / __ \\_\\___ \\|    <  \\     \\___|  |_|  |\n" +
+                "  |____|  (____  /____  >__|_ \\  \\______  /____/__|\n" +
+                "               \\/     \\/     \\/         \\/         \n"+
+                "\n"+"Manage your tasks!"+"\n"
+)
+public class TaskCLI implements Runnable {
     private static final TaskManager taskManager = new TaskManager();
 
+    @Option(names = {"-h", "--help"}, description = "Display help/usage information", usageHelp = true)
+    boolean help;
+
     public static void main(String[] args) {
-        if (args.length == 0) {
-            printHelp();
-            return;
+        CommandLine.run(new TaskCLI(), args);
+    }
+
+    @Command(name = "add", description = "Add a new task")
+    private void addCommand(
+            @Parameters(paramLabel = "DESCRIPTION", description = "The description of the task") String description,
+            @Option(names = {"-s","--status"},description = "The status for the task")String status
+    ){
+        if(status==null){
+            addTask(description);
+        }
+        else{
+            addTask(description,status);
         }
 
+    }
 
-        String command = args[0].toLowerCase();
-
-        switch (command) {
-            case "add":
-                // TODO: add with status
-                if (args.length < 2) {
-                    System.out.println("Error: Description is required for adding a task.");
-                    break;
-                }
-                StringBuilder desc = new StringBuilder();
-                for (int i = 1; i < args.length; i++) {
-                    desc.append(args[i]).append(" ");
-                }
-                addTask(desc.toString().trim());
-                break;
-
-            case "update":
-                if (args.length < 3) {
-                    System.out.println("Error: Task ID and new description are required.");
-                    break;
-                }
-                StringBuilder newDesc = new StringBuilder();
-                for (int i = 2; i < args.length; i++) {
-                    newDesc.append(args[i]).append(" ");
-                }
-                updateTask(args[1], newDesc.toString().trim());
-                break;
-
-            case "delete":
-                if (args.length < 2) {
-                    System.out.println("Error: Task ID is required for deletion.");
-                    break;
-                }
-                deleteTask(args[1]);
-                break;
-
-            case "mark-in-progress":
-                if (args.length < 2) {
-                    System.out.println("Error: Task ID is required to mark as in progress.");
-                    break;
-                }
-                markTaskInProgress(args[1]);
-                break;
-
-            case "mark-done":
-                if (args.length < 2) {
-                    System.out.println("Error: Task ID is required to mark as done.");
-                    break;
-                }
-                markTaskDone(args[1]);
-                break;
-
-            case "list":
-                if (args.length == 1) {
-                    listTasks();
-                } else if (args.length == 2) {
-                    // TODO: fuzzy search by description
-                    listTasksByStatus(args[1]);
-                } else {
-                    System.out.println("Error: Invalid usage of 'list' command.");
-                }
-                break;
-
-            case "help":
-                if(args.length>2){
-                    System.out.println("No such command");
-                    System.out.println("Use 'tcli help'");
-                    break;
-                }
-                printHelp();
-                break;
-
-            default:
-                System.out.println("Unknown command: " + command);
-                System.out.println("Use 'tcli help'");
+    @Command(name = "update", description = "Update a task")
+    private void updateCommand(
+            @Parameters(index = "0", paramLabel = "ID", description = "ID of the task you want to update") String id,
+            @Option(names = {"-d", "--description"}, description = "Updated description") String newDescription,
+            @Option(names = {"-s", "--status"}, description = "Updated status") String newStatus
+    ){
+        boolean isnewDesc = (newDescription!=null);
+        boolean isnewStatus = (newStatus!=null);
+        if (!isnewDesc && !isnewStatus){
+            System.out.println("Nothing to update!");
+        } else if (isnewDesc && !isnewStatus) {
+            updateTask(id,newDescription);
+        } else if (!isnewDesc) {
+            //TODO
+        } else{
+            //TODO
         }
+
+    }
+
+    @Command(name = "delete",description = "Delete a task")
+    private void deleteCommand(
+            @Parameters(index = "0", paramLabel = "ID", description = "ID of the task you want to delete") String id
+    ){
+        deleteTask(id);
+    }
+
+    @Command(name = "list", description = "List tasks")
+    private void listCommand(
+            @Option(names = {"-s", "--status"}, description = "status filter") String statusFilter
+    ){
+        if(statusFilter==null){
+            listTasks();
+        }
+        else {
+            listTasksByStatus(statusFilter);
+        }
+
     }
 
     private static void addTask(String description) {
         Task task = new Task(description);
+        taskManager.addTask(task);
+        System.out.println("Task added successfully (ID: " + task.getId() + ")");
+    }
+
+    private static void addTask(String description,String status) {
+        Task task = new Task(description,status);
         taskManager.addTask(task);
         System.out.println("Task added successfully (ID: " + task.getId() + ")");
     }
@@ -118,23 +114,28 @@ public class TaskCLI {
     }
 
     private static void listTasksByStatus(String status) {
-        Status taskStatus = Status.valueOf(status.toUpperCase());
         List<Task> tasks = taskManager.listTasks();
         tasks.stream()
-                .filter(task -> task.getStatus().equals(taskStatus.toString()))
+                .filter(task -> task.getStatus().equals(status))
                 .forEach(System.out::println);
     }
 
 
-    private static void printHelp() {
-        System.out.println("Task Tracker CLI");
-        System.out.println("Usage:");
-        System.out.println("tcli add <description>");
-        System.out.println("tcli update <id> <description>");
-        System.out.println("tcli delete <id>");
-        System.out.println("tcli mark-in-progress <id>");
-        System.out.println("tcli mark-done <id>");
-        System.out.println("tcli list");
-        System.out.println("tcli list <status>  (Valid statuses: todo, in-progress, done)");
+//    private static void printHelp() {
+//        System.out.println("Task Tracker CLI");
+//        System.out.println("Usage:");
+//        System.out.println("tcli add <description>"); //done
+//        System.out.println("tcli update <id> <description>"); //done
+//        System.out.println("tcli delete <id>"); //done
+//        System.out.println("tcli mark-in-progress <id>");
+//        System.out.println("tcli mark-done <id>");
+//        System.out.println("tcli list"); //done
+//        System.out.println("tcli list <status>  (Valid statuses: todo, in-progress, done)");
+//    }
+
+    @Override
+    public void run() {
+        //default case
+        System.out.println("tcli --help");
     }
 }
