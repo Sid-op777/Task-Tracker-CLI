@@ -13,7 +13,6 @@ package com.tasktracker;
  * It also provides a method to validate and convert string input to a {@code Status} enum.
  */
 
-//work on this
 public enum Status {
     TODO,
     IN_PROGRESS,
@@ -34,7 +33,7 @@ public enum Status {
         try{
             return Status.valueOf(status.trim().toUpperCase());
         }catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid status: " + status + ". Valid statuses are: todo, in-progress, done");
+            throw new IllegalArgumentException("Invalid status: " + status + ". Valid statuses are: todo, in_progress, done");
         }
     }
 }
