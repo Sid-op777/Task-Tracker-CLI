@@ -58,13 +58,13 @@ The `tcli` tool provides the following commands:
 *   `add`: Adds a new task.
    *   `DESCRIPTION`: The description of the task.
    *   Options:
-      *   `-s, --status`: The status for the task (TODO, IN_PROGRESS, DONE). Defaults to TODO if not specified.
+        *   `-s, --status`: The status for the task (TODO, IN_PROGRESS, DONE). Defaults to TODO if not specified.
 
-    Example:
+Example:
 
-    ```
-    java -jar target/TaskTracker-1.0-SNAPSHOT.jar add "Buy groceries" -s IN_PROGRESS
-    ```
+```
+java -jar target/TaskTracker-1.0-SNAPSHOT.jar add "Buy groceries" -s IN_PROGRESS
+```
 
 *   `update`: Updates an existing task.
    *   `ID`: The ID of the task to update.
@@ -72,41 +72,41 @@ The `tcli` tool provides the following commands:
       *   `-d, --description`: Updated description.
       *   `-s, --status`: Updated status (TODO, IN_PROGRESS, DONE).
 
-    Example:
+Example:
 
-    ```
-    java -jar target/TaskTracker-1.0-SNAPSHOT.jar update <task_id> -d "Buy organic groceries" -s DONE
-    ```
+```
+java -jar target/TaskTracker-1.0-SNAPSHOT.jar update <task_id> -d "Buy organic groceries" -s DONE
+```
 
 *   `delete`: Deletes a task.
    *   `ID`: The ID of the task to delete.
 
-    Example:
+Example:
 
-    ```
-    java -jar target/TaskTracker-1.0-SNAPSHOT.jar delete <task_id>
-    ```
+```
+java -jar target/TaskTracker-1.0-SNAPSHOT.jar delete <task_id>
+```
 
 *   `list`: Lists tasks.
    *   Options:
       *   `-s, --status`: Filter tasks by status (TODO, IN_PROGRESS, DONE).
 
-    Example:
+Example:
 
-    ```
-    java -jar target/TaskTracker-1.0-SNAPSHOT.jar list -s TODO
-    ```
+```
+java -jar target/TaskTracker-1.0-SNAPSHOT.jar list -s TODO
+```
 
 *   `search`: Searches task descriptions for a keyword.
    *   `keyword`: The keyword to search for.
    *   Options:
       *   `-k`: The number of top matching tasks to return (defaults to 5).
 
-    Example:
+Example:
 
-    ```
-    java -jar target/TaskTracker-1.0-SNAPSHOT.jar search "groceries" -k 3
-    ```
+```
+java -jar target/TaskTracker-1.0-SNAPSHOT.jar search "groceries" -k 3
+```
 
 *   `-h, --help`: Displays help/usage information.
 
@@ -209,5 +209,3 @@ The `tasks.json` file stores tasks in the following JSON format:
 *   The project uses the Picocli library for command-line argument parsing.
 *   The Levenshtein Distance algorithm (from Apache Commons Text) is used for fuzzy searching of tasks.
 *   Tasks are persisted to a JSON file for data storage.
-
-Solution to the Task Tracker Project (https://roadmap.sh/projects/task-tracker)
