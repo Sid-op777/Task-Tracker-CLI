@@ -160,9 +160,9 @@ To run the tool from any directory:
 
 1.  Add the project directory to the system `PATH`:
    *   On Windows:
-      *   Open *System Properties* -> *Advanced* -> *Environment Variables*.
-      *   Under *System variables*, find `Path` and edit it.
-      *   Add the absolute path of the project root.
+          *   Open *System Properties* -> *Advanced* -> *Environment Variables*.
+          *   Under *System variables*, find `Path` and edit it.
+          *   Add the absolute path of the project root.
    *   On Linux/macOS:
 
        ```sh
